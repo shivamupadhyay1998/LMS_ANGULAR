@@ -1,0 +1,110 @@
+<div class="container intro" *ngIf="!viewSector && !isAddMode && !isEditMode">
+    <div class="gradient-custom-1 h-100 inner-container">
+        <div class="text-center mb-5 pt-5">
+            <h3>List of Currencies</h3>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-sm my-btn" (click)="addCurrency()">Add Currency</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr class="">
+                        <th scope="col-2">Country</th>
+                        <th scope="col-5">Currency</th>
+                        <th scope="col-5">Currency Code</th>
+                        <th scope="col-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let currency of currencyData">
+                        <td>
+                            <ng-container *ngIf="currency.country">
+                                {{ currency.country.name }}
+                            </ng-container>
+                        </td>
+                        <td>{{currency.currencyName}}</td>
+                        <td>{{currency.currencyCode}}</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn my-btn btn-sm" (click)="expandMenu()">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ng-container *ngIf="isExtended">
+                                    <div class="action-list">
+                                        <ul style="list-style-type: none;">
+                                            <li (click)="editCurrency(currency.id)">Edit</li>
+                                            <li (click)="viewDetail(currency.id)">View Detail</li>
+                                            <li (click)="deleteCurrency(currency.id)">Delete</li>
+                                        </ul>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Create Sector section -->
+<div class="container p-5 intro gradient-custom-1" *ngIf="isAddMode || isEditMode">
+    <div class="add-form-card card">
+        <div class="text-center mb-3 card-header " style="border: none;">
+            <h3>{{ isEditMode ? 'Edit Currency' : 'Add Currency' }}</h3>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="isAddMode ? createCurrency() : updateCurrency()">
+                <div class="mb-3">
+                    <label for="country" class="form-label">Country :<span style="color: red;">*</span></label>
+                    <select id="country" style="background: transparent;" class="form-select" aria-label="Select Country"
+                        [(ngModel)]="currency.country.id" [ngModelOptions]="{ standalone: true }" required>
+                        <option selected>Open this select menu</option>
+                        <option style="background: transparent;" *ngFor="let country of countryData"
+                            [value]="country.id">
+                            {{ country.name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="currencyName" class="form-label">Currency Name:<span style="color: red;">*</span></label>
+                    <input style="background: transparent;" type="text" class="form-control" id="currencyName" name="currencyName"
+                        [(ngModel)]="currency.currencyName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="currencyCode" class="form-label">Currency Code:<span style="color: red;">*</span></label>
+                    <input style="background: transparent;" type="text" class="form-control" id="currencyCode" name="currencyCode"
+                        [(ngModel)]="currency.currencyCode" required>
+                </div>
+                
+                <button type="submit" class="mt-3 btn btn-md my-btn">{{ isEditMode ? 'Update' : 'Add' }}</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- View detail page -->
+
+<div class="container mt-5" *ngIf="viewSector && isloaded && !isAddMode && !isEditMode">
+    <div class="card gradient-custom-1 detail-card">
+        <div class="card-body">
+            <dl>
+                <dt>
+                    <h3>{{currencyData.currencyName}}</h3>
+                </dt>
+                <dt>
+                    <p>{{currencyData.currencyCode}}</p>
+                </dt>
+                <dd>Country:{{countryData.name}}</dd>
+                <!-- <dd>
+                    <p class="info-text">Created On {{sectorData.dateCreated}} by
+                        {{sectorData.creator.name}}</p>
+                </dd> -->
+            </dl>
+        </div>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,176 @@
+<div class="container intro" *ngIf="!viewTopicstatus && !isAddMode && !isEditMode">
+    <div class="gradient-custom-1 h-100 inner-container">
+        <div class="text-center mb-5 pt-5">
+            <h3>List of Topic status</h3>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-sm my-btn" (click)="addTopicstatus()">Add Topicstatus</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr class="">
+                        <th scope="col-2">Title</th>
+                        <th scope="col-5">completionTime</th>
+                        <th scope="col-2">Topic</th>
+                        <th scope="col-2">Lesson</th>
+                        <th scope="col-2">Course</th>
+                        <th scope="col-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let topicstatus of topicstatusData">
+                        <td>{{topicstatus.name}}</td>
+                        <td>{{topicstatus.completionTime}}</td>
+                        <td>
+                            <ng-container *ngIf="topicstatus.topic">
+                                {{ topicstatus.topic.topicName }}
+                            </ng-container>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="topicstatus.lesson">
+                                {{ topicstatus.lesson.lessonName }}
+                            </ng-container>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="topicstatus.course">
+                                {{ topicstatus.course.courseTitle }}
+                            </ng-container>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn my-btn btn-sm" (click)="expandMenu()">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ng-container *ngIf="isExtended">
+                                    <div class="action-list">
+                                        <ul style="list-style-type: none;">
+                                            <li class="action-list-content" (click)="editTopicstatus(topicstatus.id)">
+                                                Edit</li>
+                                            <li class="action-list-content" (click)="viewDetail(topicstatus.id)">View
+                                                Detail</li>
+                                            <li class="action-list-content" (click)="deleteTopicstatus(topicstatus.id)">
+                                                Delete</li>
+                                        </ul>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Create Topicstatus section -->
+<div class="container p-5 intro gradient-custom-1" *ngIf="isAddMode || isEditMode">
+    <div class="mb-3">
+        <button class="btn my-btn btn-sm" (click)="redirectToHomePage()"><i class="bi bi-caret-left"></i> Back</button>
+    </div>
+    <div class="add-form-card card">
+        <div class="text-center mb-3 card-header " style="border: none;">
+            <h3>{{ isEditMode ? 'Edit Topicstatus' : 'Add Topicstatus' }}</h3>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="isAddMode ? createTopicstatus() : updateTopicstatus()" ngNativeValidate>
+                <div class="mb-3">
+                    <label for="Name" class="form-label">Name:<span style="color: red;">*</span></label>
+                    <input style="background: transparent;" type="text" class="form-control" id="Name" name="Name"
+                        [(ngModel)]="topicstatus.name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="completionTime" class="form-label">Completion Time:<span
+                            style="color: red;">*</span></label>
+                    <input style="background: transparent;" id="completionTime" class="form-control"
+                        name="completionTime" [(ngModel)]="topicstatus.completionTime" required>
+                </div>
+                <div class="mb-3">
+                    <label for="timeSpent" class="form-label">Time Spent:<span style="color: red;">*</span></label>
+                    <input style="background: transparent;" id="timeSpent" class="form-control" name="timeSpent"
+                        [(ngModel)]="topicstatus.timeSpent" required>
+                </div>
+                <ng-container *ngIf="true">
+                    <label for="completed" class="form-label">Completed:</label>
+                    <select id="completed" style="background: transparent;" class="form-select" aria-label="completed"
+                        [(ngModel)]="topicstatus.completed.name" name="completed">
+                        <option *ngFor="let Completed of completedData" [value]="Completed.name">{{ Completed.name }}
+                        </option>
+                    </select>
+                </ng-container>
+                <div class="mb-3">
+                    <label for="videoTime" class="form-label">Video Time:<span style="color: red;">*</span></label>
+                    <textarea style="background: transparent;" id="videoTime" class="form-control" name="videoTime"
+                        [(ngModel)]="topicstatus.videoTime" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="course" class="form-label">Course :<span style="color: red;">*</span></label>
+                    <select id="topic" style="background: transparent;" class="form-select" aria-label="Select Domain"
+                        [(ngModel)]="topicstatus.course.id" [ngModelOptions]="{ standalone: true }" required>
+                        <option selected>Open this select menu</option>
+                        <option style="background: transparent;" *ngFor="let course of courseData" [value]="course.id">
+                            {{ course.courseTitle }}
+                        </option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="lesson" class="form-label">Lesson :<span style="color: red;">*</span></label>
+                    <select id="lesson" style="background: transparent;" class="form-select" aria-label="Select Domain"
+                        [(ngModel)]="topicstatus.lesson.id" [ngModelOptions]="{ standalone: true }" required>
+                        <ng-container *ngFor="let lesson of lessonData">
+                            <option *ngIf="topicstatus.course.id==lesson.r_courseToLesson_c_courseId"
+                                [value]="lesson.id">
+                                {{ lesson.lessonName }}</option>
+                        </ng-container>
+
+
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="topic" class="form-label">Topic :<span style="color: red;">*</span></label>
+                    <select id="topic" style="background: transparent;" class="form-select" aria-label="Select Domain"
+                        [(ngModel)]="topicstatus.topic.id" [ngModelOptions]="{ standalone: true }" required>
+                        <option selected>Open this select menu</option>
+                        <ng-container *ngFor="let topic of topicData">
+                            <option *ngIf="topicstatus.lesson.id==topic.r_lessonToTopic_c_lessonId" [value]="topic.id">
+                                {{ topic.topicName }}</option>
+                        </ng-container>
+                    </select>
+                </div>
+                <button type="submit" class="mt-3 btn btn-md my-btn">{{ isEditMode ? 'Update' : 'Add' }}</button>
+                <button *ngIf="isAddMode" class="mt-3 btn btn-md btn-success" style="margin-left:10px;"
+                    (click)="resetForm()">Reset</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- View detail page -->
+
+<div class="container mt-5" *ngIf="viewTopicstatus && isloaded && !isAddMode && !isEditMode">
+    <div class="card gradient-custom-1 detail-card">
+        <div class="card-body">
+            <dl>
+                <dt>
+                    <button class="btn btn-sm my-btn" (click)="redirectToHomePage()"><i class="bi bi-caret-left"></i>
+                        Back</button>
+                    <div class="text-center">
+                        <h3 class="text-center">{{topicstatusData.name}}</h3>
+                    </div>
+                </dt>
+                <dd>{{topicstatusData.completionTime}}</dd>
+                <dd>Completion Time:{{topicstatusData.completionTime}}</dd>
+                <dd>Time Spent:{{topicstatusData.timeSpent}}</dd>
+                <dd>Completed:{{topicstatusData.completed.name}}</dd>
+                <dd>Video Time:{{topicstatusData.completionTime}}</dd>
+                <dd>Topic Name:{{topicData.topicName}}</dd>
+                <dd>Lesson name:{{lessonData.lessonName}}</dd>
+
+                <dd>
+                    <p class="info-text">Created On {{topicstatusData.dateCreated}} by
+                        {{topicstatusData.creator.name}}</p>
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>

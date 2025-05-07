@@ -1,0 +1,340 @@
+<div class="container intro" *ngIf="!viewCourse && !isAddMode && !isEditMode  && !isAddLessonMode && !isEditLessonMode">
+    <div class="h-100 gradient-custom-1 inner-container">
+        <div class="text-center mb-5 pt-5">
+            <h3>List of Courses</h3>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-md my-btn" (click)="addCourse()">Add Course</button>
+        </div>
+
+        <div class="row mb-3 " *ngFor="let course of courseData">
+            <div class="col-md-12 col-xl-12">
+                <div class="card shadow-0 border rounded-3 " style="background: transparent;border: 2px solid white">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 col-lg-3 col-xl-3 mb-4 mb-lg-0">
+                                <div class="bg-image hover-zoom ripple rounded ripple-surface">
+                                    <div *ngIf="course.thumbnailImage">
+                                    <img src="http://localhost:8080{{course.thumbnailImage.link.href}}"
+                                        class="w-100 img-fluid img-thumbnail"
+                                        style="width:auto; height: 130px; border-radius: 5px;" />
+                                    </div>
+                                    <a href="#!">
+                                        <div class="hover-overlay">
+                                            <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);">
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 col-xl-7">
+                                <h5>{{course.courseTitle}}</h5>
+                                <div class="mt-1 mb-0 text-muted small">
+                                    <span>Created by: {{course.creator.name}}</span>
+                                    <span class="text-primary"> • </span>
+                                    <span>Created On: {{course.dateCreated}}</span>
+                                </div>
+                                <div class="mb-2 text-muted small">
+                                    <span *ngIf="course.active">Active: {{course.active.name}}</span>
+                                    <span class="text-primary"> • </span>
+                                    <span *ngIf="course.level">Level: {{course.level.name}}</span>
+                                    <span class="text-primary"> • </span>
+                                    <span *ngIf="course.courseMembership">Membership: {{course.courseMembership.name}}<br /></span>
+                                </div>
+                                <p class="text-truncate mb-4 mb-md-0">
+                                    {{course.description}}
+                                </p>
+                            </div>
+                            <div class="col-md-6 col-lg-3 col-xl-2 m-auto border-sm-start-none border-start">
+                                <div class="d-flex flex-column mt-4">
+                                    <button class="btn my-btn btn-sm" type="button" (click)="viewDetail(course.id)">View
+                                        Detail</button>
+                                    <button class="btn btn-success btn-sm mt-2" type="button"
+                                        (click)="editCourse(course.id)">Edit</button>
+                                    <button class="btn btn-danger btn-sm mt-2" type="button"
+                                        (click)="deleteCourse(course.id)">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Sector section -->
+<div class="container p-5 intro gradient-custom-1" *ngIf="isAddMode || isEditMode">
+    <div class="mb-3">
+        <button class="btn my-btn btn-sm" (click)="redirectToHomePage()"><i class="bi bi-caret-left"></i> Back</button>
+    </div>
+    <div class="add-form-card card">
+        <div class="text-center mb-3 card-header " style="border: none;">
+            <h3>{{ isEditMode ? 'Edit Course' : 'Add Course' }}</h3>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="isAddMode ? createCourse() : updateCourse()" ngNativeValidate>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Course Title:</label>
+                    <input style="background: transparent;" type="text" class="form-control" id="title" name="title"
+                        [(ngModel)]="course.courseTitle" required>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <textarea id="description" style="background: transparent;" type="text" class="form-control" name="description"
+                        [(ngModel)]="course.description" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="courseURL" class="form-label">Course URL:</label>
+                    <input id="courseURL" style="background: transparent;" type="text" class="form-control" name="courseURL"
+                        [(ngModel)]="course.courseURL" required>
+                </div>
+                <div class="mb-3">
+                    <label for="cPECredit" class="form-label">CPE Credit:</label>
+                    <input id="cPECredit" style="background: transparent;" type="text" class="form-control" name="cPECredit"
+                        [(ngModel)]="course.cPECredit" required>
+                </div>
+                <div class="mb-3">
+                    <label for="role" class="form-label">Role:</label>
+                    <input id="role" style="background: transparent;" type="text" class="form-control" name="description"
+                        [(ngModel)]="course.role" required>
+                </div>
+                <div class="mb-3">
+                    <label for="passingMarks" class="form-label">Passing Marks:</label>
+                    <input id="passingMarks" style="background: transparent;" type="text" class="form-control" name="passingMarks"
+                        [(ngModel)]="course.passingMarks" required>
+                </div>
+                <div class="mb-3">
+                    <label for="startDate" class="form-label">Start Date:</label>
+                    <input style="background: transparent;" type="date" class="form-control" id="startDate"
+                        name="startDate" [(ngModel)]=" course.startDate" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="endDate" class="form-label">End Date:</label>
+                    <input style="background: transparent;" type="date" class="form-control" id="endDate" name="endDate"
+                        [(ngModel)]="course.endDate" />
+                </div>
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Thumbnail Image:</label>
+                    <input style="background: transparent;" class="form-control" type="file" id="formFile"
+                        accept="image/*" (change)="handleImageUpload($event)">
+                    <div id="formFile" class="form-text" *ngIf="!file || !file.name">{{file}}</div>
+                    <div id="formFile" class="form-text" *ngIf="file && file.name">{{file.name}}</div>
+                </div>
+                <ng-container *ngIf="true">
+                    <label for="courseMembership" class="form-label">Course Membership:</label>
+                    <select id="courseMembership" style="background: transparent;" class="form-select" aria-label="Default select Membership"
+                    [(ngModel)]="course.courseMembership.name" name="courseMembership" [ngModelOptions]="{ standalone: true } ">
+                        <option *ngFor="let courseMembership of membershipData" [value]="courseMembership.name">{{
+                            courseMembership.name }}</option>
+                    </select>
+                </ng-container>
+                <ng-container *ngIf="true">
+                    <label for="active" class="form-label">Active</label>
+                    <select id="active" style="background: transparent;" class="form-select" aria-label="Active"
+                        [(ngModel)]="course.active.name" name="active">
+                        <option *ngFor="let active of activeData" [value]="active.name">{{ active.name }}</option>
+                    </select>
+                </ng-container>                
+                <ng-container *ngIf="true">
+                    <label for="level" class="form-label">Level</label>
+                    <select id="level" style="background: transparent;" class="form-select" aria-label="Default select Membership"
+                    [(ngModel)]="course.level.name" name="level" [ngModelOptions]="{ standalone: true } ">
+                        <option *ngFor="let level of levelData" [value]="level.name">{{ level.name }}</option>
+                    </select>
+                </ng-container>
+                <ng-container *ngIf="true">
+                    <label for="domain" class="form-label">Domain:</label>
+                    <select id="domain" name="domain" style="background: transparent;" class="form-select" aria-label="Default select Domain"
+                        [(ngModel)]="course.domain.id" [ngModelOptions]="{ standalone: true } ">
+                        <option *ngFor="let domain of domainData" [value]="domain.id">{{ domain.title }}</option>
+                    </select>
+                </ng-container>
+                <ng-container *ngIf="true">
+                    <label for="sector" class="form-label">Sector:</label>
+                    <select id="sector" name="sector" style="background: transparent;" class="form-select" aria-label="Default select Sector"
+                        [(ngModel)]="course.sector.id" [ngModelOptions]="{ standalone: true } ">
+                        <option *ngFor="let sector of sectorData" [value]="sector.id">{{ sector.title }}</option>
+                    </select>
+                </ng-container>
+                <button type="submit" class="mt-3 btn btn-md my-btn">{{ isEditMode ? 'Update' : 'Add' }}</button>
+                <button *ngIf="isAddMode" class="btn btn-md btn-success" style="margin-left:10px;" (click)="resetForm()">Reset</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- View detail page -->
+
+<div class="container justify-content-center d-flex gradient-custom-1 h-100"
+    *ngIf="viewCourse  && !isAddMode && !isEditMode">
+    <div class="row" style="height: fit-content;width: 90%;">
+        <div class="col-xl-12 col-md-12">
+            <button class="btn btn-sm my-btn mt-5 mb-2" (click)="redirectToHomePage()"><i class="bi bi-caret-left"></i> Back</button>
+            <div class="card mb-3" style="background: transparent;">
+                <div class="row g-0">
+                    <div class="col-md-3" *ngIf="courseData.thumbnailImage">
+                        <img src="http://localhost:8080{{courseData.thumbnailImage.link.href}}"
+                            class="img-fluid img-thumbnail" style="width: 150px;
+                            height: 150px;
+                            border-radius: 50%;
+                            margin: 20px;" />
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h4 class="card-title">{{courseData.courseTitle}}</h4>
+                            <p class="card-text">
+                                <!-- <b>ID: </b>{{courseData.id}}<br> -->
+                                {{courseData.description}}<br>
+                                <div class="row">
+                                    <div class="col"><p><b>Course URL: </b><br>{{courseData.courseURL}}<br></p></div>
+                                    <div class="col"><p><b>CPE Credit: </b><br>{{courseData.cPECredit}}<br></p></div>
+                                </div>
+                            <!-- <button class="btn btn-sm my-btn" (click)="openLesson()">
+                                Add Lesson
+                            </button> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-12 col-md-12">
+            <div class="row">
+                <div class="col">
+                    <div class="card bg tile">
+                        <h4 class="mt-2">Domain</h4>
+                        <p *ngIf="domainData.title">{{domainData.title}}</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card bg tile">
+                        <h4 class="mt-2">Sector</h4>
+                        <p *ngIf="sectorData.title">{{sectorData.title}}</p>
+                    </div>
+                </div>
+                <div class="col" *ngIf="courseData.level">
+                    <div class="card bg tile">
+                        <h4 class="mt-2">Level</h4>
+                        <p>{{courseData.level.name}}</p>
+                    </div>
+                </div>
+                <div class="col" *ngIf="courseData.courseMembership">
+                    <div class="card bg tile">
+                        <h4 class="mt-2">Course Membership</h4>
+                        <p>{{courseData.courseMembership.name}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-12 col-md-12">
+            <div class="card" style="background: transparent;">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <p *ngIf="courseData.startDate"><b>Start Date: </b><br>{{courseData.startDate}}<br></p>
+                            <p *ngIf="courseData.creator"><b>Created by:</b><br> {{courseData.creator.name}}<br></p>
+                        </div>
+                        <div class="col">
+                            <p><b>End Date: </b><br>{{courseData.endDate}}<br></p>
+                            <p><b>Created On:</b><br> {{courseData.dateCreated}}<br></p>
+                        </div>
+                        <div class="col">
+                            <p><b>Role: </b><br>{{courseData.role}}<br></p>
+                            <p><b>Modified On:</b> <br>{{courseData.dateModified}}<br></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="col-xl-12 col-md-12">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                  <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-lessons" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Lessons</button>
+                  <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-assesment" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Assesment</button>
+                  <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-member" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Member</button>
+                  <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-questionset" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Question Set</button>
+
+                </div>
+              </nav>
+              <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-lessons" role="lessons" aria-labelledby="nav-home-tab">
+                    <app-lessonbycourse></app-lessonbycourse> 
+                </div>
+                <div class="tab-pane fade" id="nav-assesment" role="tabpanel" aria-labelledby="nav-profile-tab"></div>
+                <div class="tab-pane fade" id="nav-member" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
+                <div class="tab-pane fade" id="nav-questionset" role="tabpanel" aria-labelledby="nav-contact-tab">
+                    <app-question-set-by-course></app-question-set-by-course>
+                </div>
+              </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+<!-- Create Lesson section -->
+<div class="container p-5 intro gradient-custom-1" *ngIf="isAddLessonMode || isEditLessonMode">
+    <div class="add-form-card card">
+        <div class="text-center mb-3 card-header " style="border: none;">
+            <h3>{{ isEditLessonMode ? 'Edit Lesson' : 'Add Lesson' }}</h3>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="isAddLessonMode ? createLesson() : updateLesson()">
+                <div class="mb-3">
+                    <label for="sequenceNo" class="form-label">Sequence No.</label>
+                    <input style="background: transparent;" type="text" class="form-control" name="sequenceNo"
+                        [(ngModel)]="lesson.sequenceNo" required>
+                </div>
+                <!-- <ng-container *ngIf="true">
+                    <label for="course" class="form-label">Course:</label>
+                    <select style="background: transparent;" class="form-select" aria-label="Default select Course"
+                        [(ngModel)]="lesson.course.id" [ngModelOptions]="{ standalone: true } ">
+                        <option style="background: transparent;" *ngFor="let course of course" [value]="course['id']">{{
+                            course.courseTitle}}</option>
+                    </select>
+                </ng-container> -->
+                <div class="mb-3">
+                    <label for="lessonName" class="form-label">Lesson Name:</label>
+                    <input style="background: transparent;" type="text" class="form-control" id="lessonName"
+                        name="lessonName" [(ngModel)]="lesson.lessonName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="summary" class="form-label">Summary:</label>
+                    <textarea style="background: transparent;" type="text" class="form-control" name="description"
+                        [(ngModel)]="lesson.summary" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="completionTimeInHrs" class="form-label">Completion Time(In Hrs):</label>
+                    <input style="background: transparent;" type="text" class="form-control" name="completionTimeInHrs"
+                        [(ngModel)]="lesson.completionTimeInHrs" required>
+                </div>
+                <ng-container *ngIf="true">
+                    <label for="active" class="form-label">Active:</label>
+                    <select style="background: transparent;" class="form-select" aria-label="Active"
+                        [(ngModel)]="lesson.active.name" [ngModelOptions]="{ standalone: true } ">
+                        <option style="background: transparent;" *ngFor="let active of activeData"
+                            [value]="active.name">{{ active.name }}</option>
+                    </select>
+                </ng-container>
+                <ng-container *ngIf="true">
+                    <label for="day" class="form-label">Day:</label>
+                    <select style="background: transparent;" class="form-select" aria-label="Day"
+                        [(ngModel)]="lesson.day.name" [ngModelOptions]="{ standalone: true } ">
+                        <option style="background: transparent;" *ngFor="let day of dayData" [value]="day.name">{{
+                            day.name }}</option>
+                    </select>
+                </ng-container>
+                <button type="submit" class="mt-3 btn btn-md my-btn">{{ isEditLessonMode ? 'Update' : 'Add' }}</button>
+            </form>
+        </div>
+    </div>
+</div>

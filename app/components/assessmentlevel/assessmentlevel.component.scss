@@ -1,0 +1,98 @@
+html,
+body,
+.intro {
+  height: 100%;
+  padding: 0;
+}
+
+.gradient-custom-1 {
+  background: linear-gradient(to left, #0492c2, rgba(246, 243, 255, 1))
+}
+
+.table-responsive{
+  overflow-x: visible;
+}
+.my-btn {
+  background-color: #0492c2;
+  color: white;
+}
+
+.inner-container {
+  padding: 0px 5%;
+}
+
+
+ul {
+  padding: 0;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.action-list {
+  display: none;
+  position: absolute;
+  right: 0px;
+  background-color: #ffffff;
+  color: black;
+  border-radius: 5px;
+  min-width: 160px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.action-list ul {
+  margin: 0;
+  padding: 0;
+}
+
+.action-list li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.dropdown:hover .action-list {
+  display: block;
+}
+
+.action-list-content:hover{
+  color:#0492c2;
+}
+
+.card-header {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.bg {
+  background-color: #0492c2;
+}
+
+.info-text {
+  color: grey;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.detail-card {
+  width: 80%;
+  margin: auto;
+}
+
+.add-form-card{
+  border: solid 2px #ffffff;
+  border-radius: 5px;
+  width: 60%;
+  margin: auto;
+  background-color: transparent;
+}
+
+.card-body> form> input{
+  background: transparent !important;
+}
+.table{
+  text-align: center;
+}

@@ -1,0 +1,226 @@
+<div class="container intro" *ngIf="!viewTopic && !isAddMode && !isEditMode">
+    <div class="h-100 gradient-custom-1 inner-container">
+        <div class="text-center mb-5 pt-5">
+            <h3>List of Topics</h3>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-md my-btn" (click)="addTopic()">Add Topic</button>
+        </div>
+
+        <div class="row mb-3 " *ngFor="let topic of topicData">
+            <div class="col-md-12 col-xl-12">
+                <div class="card shadow-0 border rounded-3 " style="background: transparent;border: 2px solid white">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 col-lg-3 col-xl-3 mb-4 mb-lg-0">
+                                <div class="bg-image hover-zoom ripple rounded ripple-surface">
+                                    <div *ngIf="topic.imageContent"><img
+                                            src="http://172.16.31.9:8080{{topic.imageContent.link.href}}"
+                                            class="w-100 img-fluid img-thumbnail"
+                                            style="width:auto; height: 130px; border-radius: 5px;" /></div>
+                                    <a href="#!">
+                                        <div class="hover-overlay">
+                                            <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);">
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 col-xl-7">
+                                <h5>{{topic.topicName}}</h5>
+                                <div class="mt-1 mb-0 text-muted small">
+                                    <span>Created by: {{topic.creator.name}}</span>
+                                    <span class="text-primary"> • </span>
+                                    <span>Created On: {{topic.dateCreated}}</span>
+                                </div>
+                                <div class="mb-2 text-muted small" *ngIf="topic.active.name">
+                                    <span>Active: {{topic.active.name}}</span>
+                                    <span class="text-primary"> • </span>
+                                </div>
+                                <p class="text-truncate mb-4 mb-md-0">
+                                    {{topic.summary}}
+                                </p>
+                            </div>
+                            <div class="col-md-6 col-lg-3 col-xl-2 m-auto border-sm-start-none border-start">
+                                <div class="d-flex flex-column mt-4">
+                                    <button class="btn my-btn btn-sm" type="button" (click)="viewDetail(topic.id)">View
+                                        Detail</button>
+                                    <button class="btn btn-success btn-sm mt-2" type="button"
+                                        (click)=" editTopic(topic.id)">Edit</button>
+                                    <button class="btn btn-danger btn-sm mt-2" type="button"
+                                        (click)="deleteTopic(topic.id)">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Sector section -->
+<div class="container p-5 intro gradient-custom-1" *ngIf="isAddMode || isEditMode">
+    <div class="mb-3">
+        <button class="btn my-btn btn-sm" (click)="redirectToHomePage()"><i class="bi bi-caret-left"></i> Back</button>
+    </div>
+    <div class="add-form-card card">
+        <div class="text-center mb-3 card-header " style="border: none;">
+            <h3>{{ isEditMode ? 'Edit Topic' : 'Add Topic' }}</h3>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="isAddMode ? createTopic() : updateTopic()" ngNativeValidate>
+                <div class="mb-3">
+                    <label for="sequenceNo" class="form-label">Sequence No:</label>
+                    <input id="sequenceNo" style="background: transparent;" type="text" class="form-control" id="sequenceNo"
+                        name="sequenceNo" [(ngModel)]="topic.sequenceNo" required>
+                </div>
+                <ng-container *ngIf="true">
+                    <label for="lesson" class="form-label">Lesson:</label>
+                    <select id="lesson" name="lesson" style="background: transparent;" class="form-select" aria-label="Default select lesson"
+                        [(ngModel)]="topic.lesson.id" [ngModelOptions]="{ standalone: true } ">
+                        <option *ngFor="let lesson of lessonData" [value]="lesson['id']">{{ lesson.lessonName }}
+                        </option>
+                    </select>
+                </ng-container>
+                <div class="mb-3">
+                    <label for="topicName" class="form-label">Topic Name:</label>
+                    <input id="topicName" style="background: transparent;" type="text" class="form-control" name="topicName"
+                        [(ngModel)]="topic.topicName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="summary" class="form-label">Summary:</label>
+                    <textarea id="summary" style="background: transparent;" type="text" class="form-control" name="summary"
+                        [(ngModel)]="topic.summary" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="completionTimeInHrs" class="form-label">Completion Time (InHrs):</label>
+                    <input id="completionTimeInHrs" style="background: transparent;" type="text" class="form-control" name="completionTimeInHrs"
+                        [(ngModel)]="topic.completionTimeInHrs" required>
+                </div>
+                <ng-container *ngIf="true">
+                    <label for="active" class="form-label">Active</label>
+                    <select id="active" style="background: transparent;" class="form-select" aria-label="Active"
+                        [(ngModel)]="topic.active.name" [ngModelOptions]="{ standalone: true } ">
+                        <option *ngFor="let active of activeData" [value]="active.name">{{ active.name }}</option>
+                    </select>
+                </ng-container>
+                <div class="mb-3">
+                    <label for="textContent" class="form-label">Text Content:</label>
+                    <textarea id="textContent" style="background: transparent;" type="text" class="form-control" name="textContent"
+                        [(ngModel)]="topic.textContent" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="imageContent" class="form-label">Image:</label>
+                    <input name="imageContent" style="background: transparent;" class="form-control" type="file" id="imageContent"
+                        accept="image/*" (change)="onFileSelected($event)">
+
+                    <label for="videoContent" class="form-label">Video:</label>
+                    <input name="videoContent" style="background: transparent;" class="form-control" type="file" id="videoContent"
+                        accept="video/*" (change)="onFileSelected($event)">
+
+                    <label for="document" class="form-label">Document:</label>
+                    <input name="document" style="background: transparent;" class="form-control" type="file" id="document"
+                        accept=".pdf, .doc, .docx" (change)="onFileSelected($event)">
+                </div>
+                <button type="submit" class="mt-3 btn btn-md my-btn">{{ isEditMode ? 'Update' : 'Add' }}</button>
+                <button *ngIf="isAddMode" class="btn btn-md btn-success" style="margin-left:10px;" (click)="resetForm()">Reset</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- View detail page -->
+
+<div class="container justify-content-center d-flex gradient-custom-1 h-100"
+    *ngIf="viewTopic && !isAddMode && !isEditMode">
+    <div class="row" style="height: fit-content;width: 90%;">
+        <div class="col-xl-12 col-md-12">
+            <div class="mb-3">
+                <button class="btn my-btn btn-sm" (click)="redirectToHomePage()"><i class="bi bi-caret-left"></i> Back</button>
+            </div>
+            <div class="card mb-3 mt-5" style="background: transparent;">
+                <div class="row g-0">
+                    <div class="col-md-3">
+                        <div *ngIf="topicData.imageContent">
+                            <img src="http://172.16.31.9:8080{{topicData.imageContent.link.href}}"
+                                class="img-fluid img-thumbnail" style="width: 150px;
+                            height: 150px;
+                            border-radius: 50%;
+                            margin: 20px;" />
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h4 class="card-title">{{topicData.topicName}}</h4>
+                            <p class="card-text">
+                                <!-- <b>ID: </b>{{courseData.id}}<br> -->
+                                {{lessonData.summary}}<br>
+                            <div class="row">
+                                <div class="col">
+                                    <p><b>Created On:</b><br> {{topicData.dateCreated}}<br></p>
+                                    <p><b>Modified On:</b> <br>{{topicData.dateModified}}<br></p>
+                                </div>
+                                <div class="col">
+                                    <p><b>Completion Time (In Hrs): </b><br>{{topicData.completionTimeInHrs}}<br></p>
+                                    <p *ngIf="topicData.creator"><b>Created by:</b><br> {{topicData.creator.name}}<br></p>
+                                </div>
+                            </div>
+                            <!-- <button class="btn btn-sm my-btn" (click)="openLesson()">
+                                Add Lesson
+                            </button> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-12 col-md-12">
+            <div class="row">
+                <div class="col">
+                    <div class="card bg tile">
+                        <h4 class="mt-2">Lesson</h4>
+                        <p *ngIf="lessonData.lessonName">{{lessonData.lessonName}}</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card bg tile">
+                        <h4 class="mt-2">Active</h4>
+                        <p *ngIf="topicData.active">{{topicData.active.name}}</p>
+                    </div>
+                </div>
+                <!-- <div class="col">
+                    <div class="card bg tile">
+                        <h4 class="mt-2">Level</h4>
+                        <p>{{courseData.level.name}}</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card bg tile">
+                        <h4 class="mt-2">Course Membership</h4>
+                        <p>{{courseData.courseMembership.name}}</p>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+        <div class="col-xl-12 col-md-12">
+            <div class="card mb-5" style="background: transparent;">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col" *ngIf="topicData.videoContent">
+                            <video width="100%" height="300px" controls>
+                                <source src="http://localhost:8080{{topicData.videoContent.link.href}}"
+                                    type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <div class="col mt-3">
+                            <p>{{topicData.textContent}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

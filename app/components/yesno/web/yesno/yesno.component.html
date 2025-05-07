@@ -1,0 +1,80 @@
+<div class="container intro" *ngIf="!viewYesNo && !isAddMode && !isEditMode">
+    <div class="gradient-custom-1 h-100 inner-container">
+        <div class="text-center mb-5 pt-5">
+            <h3>List of YesNo</h3>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-sm my-btn" (click)="addYesNo()"> Add </button>
+        </div>
+        <div class="table-responsive"> <!-- Move the class to this div -->
+            <table class="table">
+                <thead>
+                    <tr class="text-center">
+                        <th scope="col-2">Name</th>
+                        <th scope="col-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let yesno of yesNoData">
+                        <td>{{yesno.name}}</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn my-btn btn-sm" (click)="expandMenu()">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ng-container *ngIf="isExtended">
+                                    <div class="action-list">
+                                        <ul style="list-style-type: none;">
+                                            <li class="action-list-content" (click)="deleteYesNo(yesno.id)">Delete
+                                            </li>
+                                            <li class="action-list-content" (click)="editYesNo(yesno.id)">Edit</li>
+                                            <li class="action-list-content" (click)="viewDetail(yesno.id)">View Detail
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Create YesNo section -->
+<div class="container p-5 intro gradient-custom-1" *ngIf="isAddMode || isEditMode">
+    <div class="add-form-card card">
+        <div class="text-center mb-3 card-header " style="border: none;">
+            <h3>{{ isEditMode ? 'Edit YesNo' : 'Add YesNo' }}</h3>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="isAddMode ? createYesNo() : updateYesNo()">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:<span style="color: red;">*</span></label>
+                    <input style="background: transparent;" type="text" class="form-control" id="name" name="name"
+                        [(ngModel)]="yesNo.name" required >
+                </div>
+               
+                <button type="submit" class="btn btn-md my-btn">{{ isEditMode ? 'Update' : 'Add' }}</button>
+            </form>
+            
+        </div>
+    </div>
+</div>
+
+<!-- View detail page -->
+<div class="container mt-5" *ngIf="viewYesNo && isLoaded && !isAddMode && !isEditMode">
+    <div class="card gradient-custom-1 detail-card">
+        <div class="card-body">
+            <dl>
+                <dt>
+                    <h3>{{yesNoData.name}}</h3>
+                </dt>
+                <dd>
+                    <p class="info-text">Created On {{yesNoData.dateCreated}} by
+                        {{yesNoData.creator.name}}</p>
+                </dd>
+            </dl>
+        </div>
+    </div>

@@ -1,0 +1,147 @@
+<div class="container intro" *ngIf="!viewAssessment && !isAddMode && !isEditMode">
+    <div class="gradient-custom-1 h-100 inner-container">
+        <div class="text-center mb-5 pt-5">
+            <h3>List of Assessments</h3>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-sm my-btn" (click)="addAssessment()">Add Assessment</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr class="">
+                        <th scope="col">Assessment Level</th>
+                        <th scope="col">Course</th>
+                        <th scope="col">No of Questions Per Lesson</th>
+                        <th scope="col">Test Type</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let assessment of assessmentData">
+                        <td>
+                            <ng-container *ngIf="assessment.assessmentLevel">
+                                {{ assessment.assessmentLevel.title }}
+                            </ng-container>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="assessment.course">
+                                {{ assessment.course.courseTitle }}
+                            </ng-container>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="assessment.noOfQuestionsPerLesson">
+                                {{ assessment.noOfQuestionsPerLesson.name }}
+                            </ng-container>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="assessment.testType">
+                                {{ assessment.testType.name }}
+                            </ng-container>
+                        </td>
+                        
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn my-btn btn-sm" (click)="expandMenu()">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ng-container *ngIf="isExtended">
+                                    <div class="action-list">
+                                        <ul style="list-style-type: none;">
+                                            <li class="action-list-content" (click)="editAssessment(assessment.id)">Edit</li>
+                                            <li class="action-list-content" (click)="viewDetail(assessment.id)">View Detail</li>
+                                            <li class="action-list-content" (click)="deleteAssessment(assessment.id)">Delete</li>
+                                        </ul>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Create Sector section -->
+<div class="container p-5 intro gradient-custom-1" *ngIf="isAddMode || isEditMode">
+    <div class="mb-3">
+        <button class="btn my-btn btn-sm" (click)="redirectToHomePage()"><i class="bi bi-caret-left"></i> Back</button>
+    </div>
+    <div class="add-form-card card">
+        <div class="text-center mb-3 card-header " style="border: none;">
+            <h3>{{ isEditMode ? 'Edit Assessment' : 'Add Assessment' }}</h3>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="isAddMode ? createAssessment() : updateAssessment()">
+               
+                <ng-container *ngIf="true">
+                    <label for="assessmentLevel" class="form-label">Assessment Level:</label>
+                    <select style="background: transparent;" class="form-select" aria-label="Default select AssessmentLevel"
+                        [(ngModel)]="assessment.assessmentLevel.id" [ngModelOptions]="{ standalone: true } ">
+                        <option style="background: transparent;" *ngFor="let assessmentLevel of assessmentLevel" [value]="assessmentLevel['id']">{{
+                            assessmentLevel.title}}</option>
+                    </select>
+                </ng-container>
+                <ng-container *ngIf="true">
+                    <label for="course" class="form-label">Course:</label>
+                    <select style="background: transparent;" class="form-select" aria-label="Default select Course"
+                        [(ngModel)]="assessment.course.id" [ngModelOptions]="{ standalone: true } ">
+                        <option style="background: transparent;" *ngFor="let course of course" [value]="course['id']">{{
+                            course.courseTitle}}</option>
+                    </select>
+                </ng-container>
+              
+              
+                <ng-container *ngIf="true">
+                    <label for="testType" class="form-label">Test Type:</label>
+                    <select style="background: transparent;" class="form-select" aria-label="TestType"
+                        [(ngModel)]="assessment.testType.name" [ngModelOptions]="{ standalone: true } ">
+                        <option style="background: transparent;" *ngFor="let testType of testTypeData"
+                            [value]="testType.name">{{ testType.name }}</option>
+                    </select>
+                </ng-container>
+                <ng-container *ngIf="true">
+                    <label for="noOfQuestionsPerLesson" class="form-label">No of Questions Per Lesson:</label>
+                    <select style="background: transparent;" class="form-select" aria-label="NoOfQuestionsPerLesson"
+                        [(ngModel)]="assessment.noOfQuestionsPerLesson.name" [ngModelOptions]="{ standalone: true } ">
+                        <option style="background: transparent;" *ngFor="let noOfQuestionsPerLesson of noOfQuestionsPerAssessmentData" [value]="noOfQuestionsPerLesson.name">{{
+                            noOfQuestionsPerLesson.name }}</option>
+                    </select>
+                </ng-container>
+                <button type="submit" class="mt-3 btn btn-md my-btn">{{ isEditMode ? 'Update' : 'Add' }}</button>
+                <button *ngIf="isAddMode" class="mt-3 btn btn-md btn-success" style="margin-left:10px;" (click)="resetForm()">Reset</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- View detail page -->
+
+<div class="container mt-5" *ngIf="viewAssessment && !isAddMode && !isEditMode">
+
+    <div class="container justify-content-center d-flex gradient-custom-1 h-100"
+        *ngIf="viewAssessment && !isAddMode && !isEditMode">
+        <div class="row" style="height: fit-content;width: 90%;">
+            <div class="col-xl-12 col-md-12">
+                <dl>
+                    <dt>
+                        <button class="btn btn-sm my-btn" (click)="redirectToHomePage()"><i class="bi bi-caret-left"></i> Back</button>
+                        <div class="text-center"><h3 *ngIf="courseData">Course: {{courseData.courseTitle}}</h3></div>    
+                    </dt>
+                    
+                    <dd *ngIf="assessmentData.testType">Test Type: {{assessmentData.testType.name}}</dd>
+                    <dd *ngIf="assessmentData.noOfQuestionsPerLesson">No of Questions Per Lesson: {{assessmentData.noOfQuestionsPerLesson.name}}</dd>
+                    <dd>
+                        <p *ngIf="assessmentData.creator" class="info-text">Created On {{assessmentData.dateCreated}} by
+                            {{assessmentData.creator.name}}</p>
+                    </dd>
+                </dl>
+            </div>
+            
+    </div>
+
+
+
+
+</div>
